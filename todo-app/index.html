@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List App</title>
+    <title>Inventory Tracking System</title>
     <style>
         * {
             margin: 0;
@@ -15,50 +15,107 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .container {
             background: white;
             border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 500px;
-            padding: 30px;
+            padding: 25px;
         }
 
         h1 {
             color: #333;
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 2em;
+            margin-bottom: 25px;
+            font-size: 1.8em;
         }
 
-        .input-section {
+        h2 {
+            color: #667eea;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .tabs {
             display: flex;
             gap: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
-        #taskInput {
-            flex: 1;
-            padding: 12px 15px;
+        .tab-btn {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .tab-btn:hover {
+            background: #e8e8e8;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 1em;
+            font-family: inherit;
             transition: border-color 0.3s;
         }
 
-        #taskInput:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #667eea;
         }
 
-        .btn-add {
-            padding: 12px 25px;
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 12px 24px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
@@ -69,152 +126,135 @@
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .btn-add:hover {
+        .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .btn-add:active {
+        .btn:active {
             transform: translateY(0);
         }
 
-        .filters {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 8px 16px;
-            background: #f0f0f0;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-        }
-
-        .filter-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        .filter-btn:hover {
-            background: #e8e8e8;
-        }
-
-        .filter-btn.active:hover {
-            background: #667eea;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .stat-item {
-            flex: 1;
-        }
-
-        .stat-label {
+        .btn-small {
+            padding: 6px 12px;
             font-size: 0.9em;
-            color: #666;
-        }
-
-        .stat-value {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .todo-list {
-            list-style: none;
-        }
-
-        .todo-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            transition: all 0.3s;
-            gap: 12px;
-        }
-
-        .todo-item:hover {
-            background: #f0f0f0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .todo-item.completed {
-            opacity: 0.6;
-        }
-
-        .todo-item.completed .todo-text {
-            text-decoration: line-through;
-            color: #999;
-        }
-
-        .checkbox {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: #667eea;
-        }
-
-        .todo-text {
-            flex: 1;
-            font-size: 1em;
-            color: #333;
-            word-break: break-word;
-        }
-
-        .priority {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            font-weight: bold;
-            color: white;
-        }
-
-        .priority.high {
-            background: #ff6b6b;
-        }
-
-        .priority.medium {
-            background: #ffa500;
-        }
-
-        .priority.low {
-            background: #4ecdc4;
+            margin: 5px 2px;
         }
 
         .btn-delete {
-            padding: 6px 12px;
             background: #ff6b6b;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
         }
 
         .btn-delete:hover {
             background: #ff5252;
-            transform: scale(1.05);
         }
 
-        .btn-delete:active {
-            transform: scale(0.95);
+        .btn-edit {
+            background: #4ecdc4;
+        }
+
+        .btn-edit:hover {
+            background: #3ab5ad;
+        }
+
+        .btn-track {
+            background: #ffa500;
+        }
+
+        .btn-track:hover {
+            background: #ff9500;
+        }
+
+        .item-list, .category-list, .transaction-list {
+            list-style: none;
+        }
+
+        .item-card, .category-card, .transaction-card {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .item-card:hover, .category-card:hover, .transaction-card:hover {
+            background: #f0f0f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .card-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .card-badge.available {
+            background: #4ecdc4;
+        }
+
+        .card-badge.taken {
+            background: #ff6b6b;
+        }
+
+        .card-badge.pending {
+            background: #ffa500;
+        }
+
+        .card-info {
+            font-size: 0.95em;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
         }
 
         .empty-state {
@@ -228,103 +268,265 @@
             margin-bottom: 10px;
         }
 
-        .actions {
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.active {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            justify-content: center;
+            align-items: center;
         }
 
-        .btn-action {
-            flex: 1;
-            padding: 10px;
-            background: #f0f0f0;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            cursor: pointer;
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .modal-title {
+            font-size: 1.5em;
             font-weight: bold;
-            transition: all 0.3s;
+            color: #333;
         }
 
-        .btn-action:hover {
-            background: #e8e8e8;
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #999;
         }
 
-        .btn-danger {
-            background: #ff6b6b;
-            color: white;
-            border-color: #ff6b6b;
+        .close-btn:hover {
+            color: #333;
         }
 
-        .btn-danger:hover {
-            background: #ff5252;
-            border-color: #ff5252;
+        .transaction-timeline {
+            border-left: 3px solid #667eea;
+            padding-left: 15px;
+            margin-top: 10px;
         }
 
-        @media (max-width: 480px) {
+        .timeline-item {
+            margin-bottom: 10px;
+            padding-left: 0;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -21px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background: #667eea;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+
+        .timeline-date {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .timeline-text {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
             .container {
-                padding: 20px;
+                padding: 15px;
             }
 
             h1 {
-                font-size: 1.5em;
+                font-size: 1.4em;
             }
 
-            .input-section {
+            h2 {
+                font-size: 1.2em;
+            }
+
+            .tabs {
                 flex-direction: column;
             }
 
-            .filters {
-                justify-content: center;
+            .tab-btn {
+                width: 100%;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📝 My Tasks</h1>
+    <div class="main-container">
+        <!-- Sidebar for Management -->
+        <div class="container">
+            <h1>📦 Inventory Manager</h1>
 
-        <div class="input-section">
-            <input 
-                type="text" 
-                id="taskInput" 
-                placeholder="Add a new task..." 
-                autocomplete="off"
-            >
-            <button class="btn-add" onclick="addTask()">Add</button>
-        </div>
-
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-label">Total</div>
-                <div class="stat-value" id="totalCount">0</div>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('add-item')">➕ Add Item</button>
+                <button class="tab-btn" onclick="showTab('add-category')">📂 Add Category</button>
             </div>
-            <div class="stat-item">
-                <div class="stat-label">Completed</div>
-                <div class="stat-value" id="completedCount">0</div>
+
+            <!-- Add Item Tab -->
+            <div id="add-item" class="tab-content active">
+                <h2>Add New Item</h2>
+                <form id="itemForm">
+                    <div class="form-group">
+                        <label for="itemName">Item Name *</label>
+                        <input type="text" id="itemName" required placeholder="e.g., Laptop, Desk Chair">
+                    </div>
+                    <div class="form-group">
+                        <label for="itemCategory">Category *</label>
+                        <select id="itemCategory" required>
+                            <option value="">Select a category...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemQuantity">Quantity *</label>
+                        <input type="number" id="itemQuantity" required min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="itemDescription">Description</label>
+                        <textarea id="itemDescription" placeholder="Add notes about the item..."></textarea>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Add Item</button>
+                </form>
             </div>
-            <div class="stat-item">
-                <div class="stat-label">Pending</div>
-                <div class="stat-value" id="pendingCount">0</div>
+
+            <!-- Add Category Tab -->
+            <div id="add-category" class="tab-content">
+                <h2>Add New Category</h2>
+                <form id="categoryForm">
+                    <div class="form-group">
+                        <label for="categoryName">Category Name *</label>
+                        <input type="text" id="categoryName" required placeholder="e.g., Electronics, Furniture">
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryColor">Color (Optional)</label>
+                        <input type="color" id="categoryColor" value="#667eea">
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Add Category</button>
+                </form>
+
+                <h2 style="margin-top: 30px;">Categories</h2>
+                <ul class="category-list" id="categoryList"></ul>
             </div>
         </div>
 
-        <div class="filters">
-            <button class="filter-btn active" onclick="filterTasks('all')">All</button>
-            <button class="filter-btn" onclick="filterTasks('pending')">Pending</button>
-            <button class="filter-btn" onclick="filterTasks('completed')">Completed</button>
-            <button class="filter-btn" onclick="filterTasks('high')">High Priority</button>
+        <!-- Main Content Area -->
+        <div class="container">
+            <h1>📊 Inventory Tracking</h1>
+
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-label">Total Items</div>
+                    <div class="stat-value" id="totalItems">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Items Taken</div>
+                    <div class="stat-value" id="itemsTaken">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Available</div>
+                    <div class="stat-value" id="itemsAvailable">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Transactions</div>
+                    <div class="stat-value" id="totalTransactions">0</div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('items')">📦 Items</button>
+                <button class="tab-btn" onclick="switchTab('transactions')">📋 Transactions</button>
+            </div>
+
+            <!-- Items Tab -->
+            <div id="items" class="tab-content active">
+                <h2>Items List</h2>
+                <ul class="item-list" id="itemList">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No items yet. Add an item to get started!</p>
+                    </div>
+                </ul>
+            </div>
+
+            <!-- Transactions Tab -->
+            <div id="transactions" class="tab-content">
+                <h2>Transaction History</h2>
+                <ul class="transaction-list" id="transactionList">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>No transactions yet.</p>
+                    </div>
+                </ul>
+            </div>
         </div>
+    </div>
 
-        <ul class="todo-list" id="todoList"></ul>
-
-        <div class="empty-state" id="emptyState" style="display: none;">
-            <div class="empty-state-icon">✨</div>
-            <p>No tasks yet. Add one to get started!</p>
-        </div>
-
-        <div class="actions">
-            <button class="btn-action" onclick="clearCompleted()">Clear Completed</button>
-            <button class="btn-action btn-danger" onclick="clearAll()">Clear All</button>
+    <!-- Track Item Modal -->
+    <div id="trackModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Mark Item as Taken</div>
+                <button class="close-btn" onclick="closeModal('trackModal')">✕</button>
+            </div>
+            <form id="trackForm">
+                <input type="hidden" id="trackItemId">
+                <div class="form-group">
+                    <label for="personName">Person Name *</label>
+                    <input type="text" id="personName" required placeholder="Who is taking this item?">
+                </div>
+                <div class="form-group">
+                    <label for="trackQuantity">Quantity Taken *</label>
+                    <input type="number" id="trackQuantity" required min="1" value="1">
+                </div>
+                <div class="form-group">
+                    <label for="trackDate">Date Taken *</label>
+                    <input type="date" id="trackDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="trackNotes">Notes</label>
+                    <textarea id="trackNotes" placeholder="Add any notes..."></textarea>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Record Transaction</button>
+            </form>
         </div>
     </div>
 
